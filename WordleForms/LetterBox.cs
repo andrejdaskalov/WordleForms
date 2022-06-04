@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace WordleForms
 {
@@ -17,26 +18,39 @@ namespace WordleForms
     {
         public static readonly int LetterBoxSize = 50;
         private readonly Pen pen = new Pen(Color.SlateGray);
+        private readonly Brush textColor = new SolidBrush(Color.Coral);
+        private readonly Font font = new Font("Segoe UI",24,FontStyle.Bold);
+        private Rectangle boundsRectangle;
+        private static StringFormat stringFormat = new StringFormat();
 
-        public char Letter { get; set; }
+        public string Letter { get; set; }
         public bool IsSelected { get; set; }
         public LetterBoxState State { get; set; }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        // public int X { get; set; }
+        // public int Y { get; set; }
 
+        static LetterBox()
+        {
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+        }
         public LetterBox(int x, int y)
         {
-            Letter = '_';
+            Letter = "_";
             IsSelected = false;
             State = LetterBoxState.Default;
-            X = x;
-            Y = y;
+            boundsRectangle = new Rectangle(x, y, LetterBoxSize, LetterBoxSize);
         }
 
         public void Draw(Graphics g)
         {
-            g.DrawRectangle(pen, X, Y,LetterBoxSize,LetterBoxSize);
+            g.DrawRectangle(pen, boundsRectangle);
+            if (IsSelected || !Letter.Equals("_"))
+            {
+                g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+            }
+            
         }
     }
 }
