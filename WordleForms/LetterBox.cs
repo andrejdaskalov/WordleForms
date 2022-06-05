@@ -16,6 +16,8 @@ namespace WordleForms
     // Perhaps a bad name but it's a letter in a box => LetterBox
     internal class LetterBox
     {
+
+        //UI stuff
         public static readonly int LetterBoxSize = 50;
         private readonly Pen pen = new Pen(Color.SlateGray); //DarkCyan ?
         private readonly Brush textColor = new SolidBrush(Color.Coral);
@@ -23,12 +25,11 @@ namespace WordleForms
         private Rectangle boundsRectangle;
         private static StringFormat stringFormat = new StringFormat();
 
+        //public fields
         public string Letter { get; set; }
         public bool IsSelected { get; set; }
         public LetterBoxState State { get; set; }
 
-        // public int X { get; set; }
-        // public int Y { get; set; }
 
         static LetterBox()
         {
