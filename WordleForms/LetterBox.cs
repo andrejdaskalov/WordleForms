@@ -17,7 +17,7 @@ namespace WordleForms
     internal class LetterBox
     {
         public static readonly int LetterBoxSize = 50;
-        private readonly Pen pen = new Pen(Color.SlateGray);
+        private readonly Pen pen = new Pen(Color.SlateGray); //DarkCyan ?
         private readonly Brush textColor = new SolidBrush(Color.Coral);
         private readonly Font font = new Font("Segoe UI",24,FontStyle.Bold);
         private Rectangle boundsRectangle;
