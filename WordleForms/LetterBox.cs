@@ -19,8 +19,12 @@ namespace WordleForms
 
         //UI stuff
         public static readonly int LetterBoxSize = 50;
-        private readonly Pen pen = new Pen(Color.SlateGray); //DarkCyan ?
+        private readonly Pen defaultPen = new Pen(Color.SlateGray); //DarkCyan ?
+        private readonly Pen greenPen = new Pen(Color.ForestGreen); 
+        private readonly Pen yellowPen = new Pen(Color.Yellow); 
+        private readonly Pen darkPen = new Pen(Color.DarkSlateGray); 
         private readonly Brush textColor = new SolidBrush(Color.Coral);
+        private readonly Brush wrongTextColor = new SolidBrush(Color.SlateGray);
         private readonly Font font = new Font("Segoe UI",24,FontStyle.Bold);
         private Rectangle boundsRectangle;
         private static StringFormat stringFormat = new StringFormat();
@@ -46,12 +50,37 @@ namespace WordleForms
 
         public void Draw(Graphics g)
         {
-            g.DrawRectangle(pen, boundsRectangle);
-            if (IsSelected || !Letter.Equals("_"))
+            if (State == LetterBoxState.Positioned)
             {
-                g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                g.DrawRectangle(greenPen, boundsRectangle);
+                if (IsSelected || !Letter.Equals("_"))
+                {
+                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                }
+            } else if (State == LetterBoxState.Guessed)
+            {
+                g.DrawRectangle(yellowPen, boundsRectangle);
+                if (IsSelected || !Letter.Equals("_"))
+                {
+                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                }
+            } else if (State == LetterBoxState.Incorrect)
+            {
+                g.DrawRectangle(darkPen, boundsRectangle);
+                if (IsSelected || !Letter.Equals("_"))
+                {
+                    g.DrawString(Letter, font, wrongTextColor, boundsRectangle, stringFormat);
+                }
             }
-            
+            else
+            {
+                g.DrawRectangle(defaultPen, boundsRectangle);
+                if (IsSelected || !Letter.Equals("_"))
+                {
+                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                }
+            }
+
         }
     }
 }

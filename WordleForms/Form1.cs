@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,9 +23,12 @@ namespace WordleForms
         private static readonly StringFormat StringFormat = new StringFormat();
 
         //private PlayBoard _board;
-        private LinkedList<LinkedList<LetterBox>> wordList;
+        private LinkedList<LinkedList<LetterBox>> _wordsOnTable;
         private LinkedListNode<LetterBox> _currentLetter;
         private LinkedListNode<LinkedList<LetterBox>> _currentWord;
+        private string _correctWord;
+        private List<string> _wordList;
+        private int _numGuesses;
 
         static Form1()
         {
@@ -40,9 +45,15 @@ namespace WordleForms
             _rectangleLogoOffset = new Rectangle(2, 2, Width, 100);
             LetterGrid = ConstructGrid();
             CreateLists();
-            _currentWord = wordList.First;
+            _currentWord = _wordsOnTable.First;
             _currentLetter = _currentWord.Value.First;
             _currentLetter.Value.IsSelected = true;
+            if (GetWordList())
+            {
+                _correctWord = PickWord();
+            }
+            _numGuesses = 0;
+
             DoubleBuffered = true;
         }
 
@@ -60,6 +71,100 @@ namespace WordleForms
                 }
             }
         }
+
+
+        /// <summary>
+        /// This method deserializes the wordlist stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List<string>.
+        ///
+        /// </summary>
+        private bool GetWordList()
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            Stream stream;
+            using (stream = File.OpenRead(@"C:\Users\Andrej\Documents\FINKI\vizuelno programiranje\WordleForms\WordListProcessor\wordlist.bin"))
+            {
+                _wordList = (List<string>)formatter.Deserialize(stream);
+            }
+            return _wordList != null;
+        }
+
+        private string PickWord()
+        {
+            Random random = new Random();
+            var index = random.Next(0, _wordList.Count);
+            return _wordList.ElementAt(index);
+        }
+
+        public string CollectWord()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var letter in _currentWord.Value)
+            {
+                sb.Append(letter.Letter);
+            }
+
+            return sb.ToString().ToLower();
+        }
+
+        public void ProcessWord()
+        {
+            int i = 0;
+            int correctLetters = 0;
+            StringBuilder sb = new StringBuilder(_correctWord);
+            foreach (var letterBox in _currentWord.Value)
+            {
+                if (_correctWord.Contains(letterBox.Letter.ToLower()))
+                {
+                    letterBox.State = LetterBoxState.Guessed;
+                    if (sb.ToString().IndexOf(letterBox.Letter.ToLower()) == i)
+                    {
+                        letterBox.State = LetterBoxState.Positioned;
+                        correctLetters++;
+                        if (correctLetters == 5)
+                        {
+                            GameWon();
+                        }
+                    }
+
+                    sb.Replace(letterBox.Letter, "-", i, 1);
+                }
+                else
+                {
+                    letterBox.State = LetterBoxState.Incorrect;
+                }
+                i++;
+            }
+        }
+
+        private void GameWon()
+        {
+            DialogResult message = MessageBox.Show("You won. Nice work! Would you like to try again?", "You win!", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Error);
+            if (message == DialogResult.Yes)
+            {
+                new Form1().Show();
+                //TODO:this doesn't work
+
+            }
+            Close();
+        }
+        private void GameOver()
+        {
+            DialogResult message = MessageBox.Show($"You ran out of tries before guessing correctly. The correct word was {_correctWord}. Would you like to try again?", "Game Over", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Error);
+            if (message == DialogResult.Yes)
+            {
+                new Form1().Show();
+                //TODO:this doesn't work
+
+            }
+            Close();
+        }
+
+        // private bool WordInList(string word)
+        // {
+        //     return _wordList.Contains(word);
+        // }
 
         private LetterBox[][] ConstructGrid()
         {
@@ -82,7 +187,7 @@ namespace WordleForms
         /// </summary>
         private void CreateLists()
         {
-            wordList = new LinkedList<LinkedList<LetterBox>>();
+            _wordsOnTable = new LinkedList<LinkedList<LetterBox>>();
             for (int i = 0; i < 6; i++)
             {
                 LinkedList<LetterBox> letterList = new LinkedList<LetterBox>();
@@ -90,23 +195,13 @@ namespace WordleForms
                 {
                     letterList.AddLast(LetterGrid[i][j]);
                 }
-                wordList.AddLast(letterList);
+                _wordsOnTable.AddLast(letterList);
             }
         }
 
         private bool KeyIsValid(Keys KeyCode)
         {
-            return KeyCode == Keys.A || KeyCode == Keys.B || KeyCode == Keys.C || KeyCode == Keys.D ||
-                   KeyCode == Keys.E ||
-                   KeyCode == Keys.F || KeyCode == Keys.G || KeyCode == Keys.H || KeyCode == Keys.I ||
-                   KeyCode == Keys.J ||
-                   KeyCode == Keys.K || KeyCode == Keys.L || KeyCode == Keys.M || KeyCode == Keys.N ||
-                   KeyCode == Keys.O ||
-                   KeyCode == Keys.P || KeyCode == Keys.Q || KeyCode == Keys.R || KeyCode == Keys.S ||
-                   KeyCode == Keys.T ||
-                   KeyCode == Keys.U || KeyCode == Keys.V || KeyCode == Keys.W || KeyCode == Keys.X ||
-                   KeyCode == Keys.Y ||
-                   KeyCode == Keys.Z;
+            return KeyCode >= Keys.A && KeyCode <= Keys.Z;
 
         }
 
@@ -148,9 +243,28 @@ namespace WordleForms
                 }
             }
             //enter key action
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter && _currentLetter.Next == null)
             {
-                //add code here to check word
+
+                var word = CollectWord();
+                if (word != null && word.Length == 5)
+                {
+                    if (! _wordList.Contains(word))
+                    {
+                        DialogResult message = MessageBox.Show("Not a valid word", "Invalid word", MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);//TODO: make it so that enter is ignored while dismissing dialog
+                        return;
+                    }
+
+                    ProcessWord();
+
+                    _numGuesses++;
+                    if (_numGuesses >= 6)
+                    {
+                        GameOver();
+                    }
+                }
+                
                 if (_currentWord.Next != null)
                 {
                     _currentLetter.Value.IsSelected = false;
@@ -162,5 +276,7 @@ namespace WordleForms
 
             Invalidate();
         }
+
+        
     }
 }
