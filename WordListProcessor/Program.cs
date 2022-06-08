@@ -12,18 +12,35 @@ namespace WordListProcessor
     {
         static void Main(string[] args)
         {
+            var rootpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var list = new List<string>();
-            var path = @"C:\Users\Andrej\Documents\FINKI\vizuelno programiranje\WordleForms\WordListProcessor\wordle-word-list.txt";
+            var path = rootpath + @"\wordle-word-list.txt";
             foreach (var line in File.ReadLines(path))
             {
                 list.Add(line);
             }
 
-            Stream stream =
-                File.Create(
-                    @"C:\Users\Andrej\Documents\FINKI\vizuelno programiranje\WordleForms\WordListProcessor\wordlist.bin");
+            var answerList = new List<string>();
+            var pathAnswer = rootpath + @"\wordle-answer-list.txt";
+            foreach (var line in File.ReadLines(pathAnswer))
+            {
+                answerList.Add(line);
+            }
+
             BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, list);
+            Stream stream;
+
+            using (stream = File.Create(rootpath + @"\wordlist.bin"))
+            {
+                formatter.Serialize(stream, list);
+            }  
+            using (stream = File.Create(rootpath + @"\answerlist.bin"))
+            {
+                formatter.Serialize(stream, answerList);
+            }    
+            
+            
+            
 
             Console.WriteLine($"Wrote {list.Count} lines to file");
             Console.WriteLine("Press any key to exit");
