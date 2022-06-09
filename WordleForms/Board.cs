@@ -16,7 +16,7 @@ namespace WordleForms
         private static int XOffset = 80;
         private static int YOffset = 100;
 
-        private WordleForm form;
+        private readonly WordleForm _form;
 
         public LetterBox[][] LetterGrid;
         public LinkedList<LinkedList<LetterBox>> WordsOnTable;
@@ -29,7 +29,7 @@ namespace WordleForms
 
         public Board(WordleForm form)
         {
-            this.form = form;
+            this._form = form;
 
             LetterGrid = ConstructGrid();
             CreateLists();
@@ -47,18 +47,18 @@ namespace WordleForms
 
         private LetterBox[][] ConstructGrid()
         {
-            var LetterGrid = new LetterBox[6][];
+            var letterGrid = new LetterBox[6][];
             for (int i = 0; i < 6; i++)
             {
-                LetterGrid[i] = new LetterBox[5];
+                letterGrid[i] = new LetterBox[5];
 
                 for (int j = 0; j < 5; j++)
                 {
-                    LetterGrid[i][j] = new LetterBox(j * LetterBox.LetterBoxSize + (j + 1) * Padding + XOffset,
+                    letterGrid[i][j] = new LetterBox(j * LetterBox.LetterBoxSize + (j + 1) * Padding + XOffset,
                         i * LetterBox.LetterBoxSize + (i + 1) * Padding + YOffset);
                 }
             }
-            return LetterGrid;
+            return letterGrid;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace WordleForms
 
 
         /// <summary>
-        /// This method deserializes the wordlist stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List<string>.
+        /// This method deserializes the word list stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List of strings .
         ///
         /// </summary>
         private bool GetWordList()
@@ -96,7 +96,7 @@ namespace WordleForms
         }
 
         /// <summary>
-        /// This method deserializes the answerlist stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List<string>.
+        /// This method deserializes the answer list stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List of strings.
         ///
         /// </summary>
         private bool GetAnswerList()
@@ -127,17 +127,28 @@ namespace WordleForms
                 if (CorrectWord.Contains(letterBox.Letter.ToLower()))
                 {
                     letterBox.State = LetterBoxState.Guessed;
-                    if (sb.ToString().IndexOf(letterBox.Letter.ToLower()) == i)
+
+                    // constructs a list of all the indexes where letter occurs and then checks if it's in one of them
+                    //previous approach only used indexof() and this only returned first index
+                    List<int> indexes = new List<int>();
+                    int position = -1;
+                    string temp = sb.ToString();
+                    while ((position = temp.IndexOf(letterBox.Letter.ToLower(), position+1 )) != -1)
+                    {
+                        indexes.Add(position);
+                    }
+                    if (indexes.Contains(i))
                     {
                         letterBox.State = LetterBoxState.Positioned;
                         correctLetters++;
                         if (correctLetters == 5)
                         {
-                            form.GameWon();
+                            _form.GameWon();
                         }
                     }
 
-                    sb.Replace(letterBox.Letter, "-", i, 1);
+                    //replaces letter with a dash so it doesn't get counted twice
+                    sb.Replace(letterBox.Letter.ToLower(), "-", i, 1);
                 }
                 else
                 {

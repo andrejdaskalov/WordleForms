@@ -36,6 +36,9 @@ namespace WordleForms
             InitializeComponent();
             Width = 470;
             Height = 570;
+            statusStrip1.BackColor = Color.FromArgb(255, 1, 5, 15);
+            toolStrip1.BackColor = Color.FromArgb(255, 1, 8, 18);
+            toolStrip1.ForeColor = Color.FromArgb(255, 1, 8, 18);
             _rectangleLogo = new Rectangle(0, 0, Width, 100);
             _rectangleLogoOffset = new Rectangle(2, 2, Width, 100);
             board = new Board(this);
@@ -93,7 +96,8 @@ namespace WordleForms
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-
+            gameMessageLabel.Text = "";
+            
             //backspace
             if (e.KeyCode == Keys.Back)
             {
@@ -137,8 +141,9 @@ namespace WordleForms
                 {
                     if (! board.WordList.Contains(word))
                     {
-                        DialogResult message = MessageBox.Show("Not a valid word", "Invalid word", MessageBoxButtons.OK,
-                            MessageBoxIcon.Exclamation);
+                        // DialogResult message = MessageBox.Show("Not a valid word", "Invalid word", MessageBoxButtons.OK,
+                        //     MessageBoxIcon.Exclamation);
+                        gameMessageLabel.Text = "Not a valid word!";
                         return;
                     }
 
@@ -148,6 +153,7 @@ namespace WordleForms
                     if (board.NumGuesses >= 6)
                     {
                         GameOver();
+                        return;
                     }
                 }
                 
@@ -163,6 +169,15 @@ namespace WordleForms
             Invalidate();
         }
 
-        
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            board = new Board(this);
+            Invalidate();
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

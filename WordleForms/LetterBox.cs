@@ -19,15 +19,16 @@ namespace WordleForms
 
         //UI stuff
         public static readonly int LetterBoxSize = 50;
-        private readonly Pen defaultPen = new Pen(Color.SlateGray); //DarkCyan ?
-        private readonly Pen greenPen = new Pen(Color.ForestGreen); 
-        private readonly Pen yellowPen = new Pen(Color.Yellow); 
-        private readonly Pen darkPen = new Pen(Color.DarkSlateGray); 
-        private readonly Brush textColor = new SolidBrush(Color.Coral);
-        private readonly Brush wrongTextColor = new SolidBrush(Color.SlateGray);
-        private readonly Font font = new Font("Segoe UI",24,FontStyle.Bold);
-        private Rectangle boundsRectangle;
-        private static StringFormat stringFormat = new StringFormat();
+        private const float PEN_WIDTH = 2;
+        private readonly Pen _defaultPen = new Pen(Color.SlateGray, PEN_WIDTH); //DarkCyan ?
+        private readonly Pen _greenPen = new Pen(Color.LawnGreen, PEN_WIDTH); 
+        private readonly Pen _yellowPen = new Pen(Color.Yellow, PEN_WIDTH); 
+        private readonly Pen _darkPen = new Pen(Color.DarkSlateGray, PEN_WIDTH); 
+        private readonly Brush _textColor = new SolidBrush(Color.Azure);
+        private readonly Brush _wrongTextColor = new SolidBrush(Color.SlateGray);
+        private readonly Font _font = new Font("Segoe UI",24,FontStyle.Bold);
+        private readonly Rectangle _boundsRectangle;
+        private static readonly StringFormat StringFormat = new StringFormat();
 
         //public fields
         public string Letter { get; set; }
@@ -37,47 +38,47 @@ namespace WordleForms
 
         static LetterBox()
         {
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
+            StringFormat.Alignment = StringAlignment.Center;
+            StringFormat.LineAlignment = StringAlignment.Center;
         }
         public LetterBox(int x, int y)
         {
             Letter = "_";
             IsSelected = false;
             State = LetterBoxState.Default;
-            boundsRectangle = new Rectangle(x, y, LetterBoxSize, LetterBoxSize);
+            _boundsRectangle = new Rectangle(x, y, LetterBoxSize, LetterBoxSize);
         }
 
         public void Draw(Graphics g)
         {
             if (State == LetterBoxState.Positioned)
             {
-                g.DrawRectangle(greenPen, boundsRectangle);
+                g.DrawRectangle(_greenPen, _boundsRectangle);
                 if (IsSelected || !Letter.Equals("_"))
                 {
-                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                    g.DrawString(Letter, _font, _textColor, _boundsRectangle, StringFormat);
                 }
             } else if (State == LetterBoxState.Guessed)
             {
-                g.DrawRectangle(yellowPen, boundsRectangle);
+                g.DrawRectangle(_yellowPen, _boundsRectangle);
                 if (IsSelected || !Letter.Equals("_"))
                 {
-                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                    g.DrawString(Letter, _font, _textColor, _boundsRectangle, StringFormat);
                 }
             } else if (State == LetterBoxState.Incorrect)
             {
-                g.DrawRectangle(darkPen, boundsRectangle);
+                g.DrawRectangle(_darkPen, _boundsRectangle);
                 if (IsSelected || !Letter.Equals("_"))
                 {
-                    g.DrawString(Letter, font, wrongTextColor, boundsRectangle, stringFormat);
+                    g.DrawString(Letter, _font, _wrongTextColor, _boundsRectangle, StringFormat);
                 }
             }
             else
             {
-                g.DrawRectangle(defaultPen, boundsRectangle);
+                g.DrawRectangle(_defaultPen, _boundsRectangle);
                 if (IsSelected || !Letter.Equals("_"))
                 {
-                    g.DrawString(Letter, font, textColor, boundsRectangle, stringFormat);
+                    g.DrawString(Letter, _font, _textColor, _boundsRectangle, StringFormat);
                 }
             }
 
