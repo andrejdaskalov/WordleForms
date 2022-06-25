@@ -62,29 +62,33 @@ namespace WordleForms
 
         public void GameWon()
         {
+            Invalidate();
             DialogResult message = MessageBox.Show("You won. Nice work! Would you like to try again?", "You win!", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Exclamation);
             if (message == DialogResult.Yes)
             {
-                board = new Board(this);
-                Invalidate();
-
+                RestartGame();
             }
             else
                 Close();
         }
         public void GameOver()
         {
+            Invalidate();
             DialogResult message = MessageBox.Show($"You ran out of tries before guessing correctly. The correct word was {board.CorrectWord}. Would you like to try again?", "Game Over", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Error);
             if (message == DialogResult.Yes)
             {
-                board = new Board(this);
-                Invalidate();
-
+                RestartGame();
             }
             else
                 Close();
+        }
+
+        private void RestartGame()
+        {
+            board = new Board(this);
+            Invalidate();
         }
 
 
@@ -171,8 +175,7 @@ namespace WordleForms
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            board = new Board(this);
-            Invalidate();
+            RestartGame();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)

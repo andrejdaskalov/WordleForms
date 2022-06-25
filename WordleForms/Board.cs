@@ -29,7 +29,7 @@ namespace WordleForms
 
         public Board(WordleForm form)
         {
-            this._form = form;
+            _form = form;
 
             LetterGrid = ConstructGrid();
             CreateLists();
@@ -62,7 +62,7 @@ namespace WordleForms
         }
 
         /// <summary>
-        /// Takes the existing LetterBox grid and connects the appropriate Next and Previous connections, as well as creates the Word and Letter structure
+        /// constructs the appropriate nested lined lists in order to allow easy iteration through the words and letters. 
         /// </summary>
         private void CreateLists()
         {
@@ -124,31 +124,27 @@ namespace WordleForms
             StringBuilder sb = new StringBuilder(CorrectWord);
             foreach (var letterBox in CurrentWord.Value)
             {
-                if (CorrectWord.Contains(letterBox.Letter.ToLower()))
+                if (sb.ToString().IndexOf(letterBox.Letter.ToLower()) == i)
+                {
+                    letterBox.State = LetterBoxState.Positioned;
+                    correctLetters++;
+                    if (correctLetters == 5)
+                    {
+                        _form.GameWon();
+                    }
+                    sb = sb.Replace(letterBox.Letter.ToLower(), "-", i, 1);
+                }
+
+                i++;
+            }
+
+            i = 0;
+            foreach (var letterBox in CurrentWord.Value)
+            {
+                if (!sb.ToString().ElementAt(i).Equals('-') && sb.ToString().Contains(letterBox.Letter.ToLower()))
                 {
                     letterBox.State = LetterBoxState.Guessed;
-
-                    // constructs a list of all the indexes where letter occurs and then checks if it's in one of them
-                    //previous approach only used indexof() and this only returned first index
-                    List<int> indexes = new List<int>();
-                    int position = -1;
-                    string temp = sb.ToString();
-                    while ((position = temp.IndexOf(letterBox.Letter.ToLower(), position+1 )) != -1)
-                    {
-                        indexes.Add(position);
-                    }
-                    if (indexes.Contains(i))
-                    {
-                        letterBox.State = LetterBoxState.Positioned;
-                        correctLetters++;
-                        if (correctLetters == 5)
-                        {
-                            _form.GameWon();
-                        }
-                    }
-
-                    //replaces letter with a dash so it doesn't get counted twice
-                    sb.Replace(letterBox.Letter.ToLower(), "-", i, 1);
+                    sb = sb.Replace(letterBox.Letter.ToLower(), "-", sb.ToString().IndexOf(letterBox.Letter.ToLower()),1);
                 }
                 else
                 {
