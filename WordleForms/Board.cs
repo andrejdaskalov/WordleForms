@@ -142,7 +142,7 @@ namespace WordleForms
             i = 0;
             foreach (var letterBox in CurrentWord.Value)
             {
-                if (!sb.ToString().ElementAt(i).Equals('-'))
+                if (letterBox.State != LetterBoxState.Positioned)
                 {
                     if (sb.ToString().Contains(letterBox.Letter.ToLower()))
                     {

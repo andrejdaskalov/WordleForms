@@ -91,6 +91,7 @@ namespace WordleForms
         private void RestartGame()
         {
             board = new Board(this);
+            virtualKeyboard = new VirtualKeyboard();
             Invalidate();
         }
 
