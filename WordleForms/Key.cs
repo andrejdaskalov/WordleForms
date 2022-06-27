@@ -13,13 +13,14 @@ namespace WordleForms
         public Rectangle Bounds { get; set; }
         public static int Width = 25;
         public static int Height = 35;
+        public int fontSize { get; set; }
         private static Brush Brush = new SolidBrush(Color.FromArgb(255,69,68,74));
         private static Brush GreenBrush = new SolidBrush(Color.LawnGreen);
         private static Brush YellowBrush = new SolidBrush(Color.Yellow);
-        private static Brush GrayBrush = new SolidBrush(Color.FromArgb(155, 69, 68, 74));
+        private static Brush GrayBrush = new SolidBrush(Color.FromArgb(255, 69, 68, 74));
 
         private static readonly StringFormat StringFormat = new StringFormat();
-        private readonly Font _font = new Font("Segoe UI", 18, FontStyle.Regular);
+        private Font _font ;
         private readonly Brush _textColor = new SolidBrush(Color.White);
         private readonly Brush _blackTextColor = new SolidBrush(Color.Black);
         public LetterBoxState State { get; set; }
@@ -46,10 +47,13 @@ namespace WordleForms
             State = LetterBoxState.Default;
         }
 
-        public Key(string content)
+        public Key(string content, int fontsize = 18)
         {
             Content = content;
             State = LetterBoxState.Default;
+            //fontSize = 18;
+            this.fontSize = fontsize;
+            _font = new Font("Segoe UI", fontSize, FontStyle.Regular);
         }
 
         public void Draw(Graphics g)

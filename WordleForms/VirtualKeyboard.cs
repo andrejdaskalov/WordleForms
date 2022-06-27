@@ -11,6 +11,8 @@ namespace WordleForms
     {
         public Key [][] KeyMatrix { get; set; }
         public Dictionary<string,Key> KeyDictionary { get; set; }
+        public Key EnterKey { get; set; }
+        public Key BackKey { get; set; }
         private static int Padding = 5;
 
 
@@ -42,6 +44,15 @@ namespace WordleForms
                     KeyDictionary.Add(KeyMatrix[i][j].Content, KeyMatrix[i][j]);
                 }
             }
+
+            BackKey = new Key("BACK", 10)
+            {
+                Bounds = new Rectangle(70, 585, 45, Key.Height),
+            };
+            EnterKey = new Key("ENTER", 10)
+            {
+                Bounds = new Rectangle(335, 585, 45, Key.Height)
+            };
         }
 
         public void Draw(Graphics g)
@@ -53,6 +64,8 @@ namespace WordleForms
                     KeyMatrix[i][j].Draw(g);
                 }
             }
+            BackKey.Draw(g);
+            EnterKey.Draw(g);
         }
     }
 }

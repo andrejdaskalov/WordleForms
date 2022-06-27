@@ -199,5 +199,35 @@ namespace WordleForms
         {
 
         }
+
+        private void WordleForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            Point p = new Point(e.X, e.Y);
+            if (virtualKeyboard.BackKey.Bounds.Contains(p))
+            {
+                DeleteLetter();
+                Invalidate();
+                return;
+            }
+
+            if (virtualKeyboard.EnterKey.Bounds.Contains(p))
+            {
+                var word = board.CollectWord();
+                EnterWord(word);
+                Invalidate();
+                return;
+            }
+            for (int i = 0; i < virtualKeyboard.KeyMatrix.Length; i++)
+            {
+                for (int j = 0; j < virtualKeyboard.KeyMatrix[i].Length; j++)
+                {
+                    if (virtualKeyboard.KeyMatrix[i][j].Bounds.Contains(p))
+                    {
+                        EnterLetter(virtualKeyboard.KeyMatrix[i][j].Content.ToUpper());
+                    }
+                }
+            }
+            Invalidate();
+        }
     }
 }
