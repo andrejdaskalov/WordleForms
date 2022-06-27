@@ -62,7 +62,7 @@ namespace WordleForms
         }
 
         /// <summary>
-        /// constructs the appropriate nested lined lists in order to allow easy iteration through the words and letters. 
+        /// constructs the appropriate nested lined lists in order to allow easy iteration through the words and letters.
         /// </summary>
         private void CreateLists()
         {
@@ -127,6 +127,7 @@ namespace WordleForms
                 if (sb.ToString().IndexOf(letterBox.Letter.ToLower()) == i)
                 {
                     letterBox.State = LetterBoxState.Positioned;
+                    _form.virtualKeyboard.KeyDictionary[letterBox.Letter.ToLower()].State = LetterBoxState.Positioned;
                     correctLetters++;
                     if (correctLetters == 5)
                     {
@@ -141,15 +142,22 @@ namespace WordleForms
             i = 0;
             foreach (var letterBox in CurrentWord.Value)
             {
-                if (!sb.ToString().ElementAt(i).Equals('-') && sb.ToString().Contains(letterBox.Letter.ToLower()))
+                if (!sb.ToString().ElementAt(i).Equals('-'))
                 {
-                    letterBox.State = LetterBoxState.Guessed;
-                    sb = sb.Replace(letterBox.Letter.ToLower(), "-", sb.ToString().IndexOf(letterBox.Letter.ToLower()),1);
+                    if (sb.ToString().Contains(letterBox.Letter.ToLower()))
+                    {
+                        letterBox.State = LetterBoxState.Guessed;
+                        _form.virtualKeyboard.KeyDictionary[letterBox.Letter.ToLower()].State = LetterBoxState.Guessed;
+                        sb = sb.Replace(letterBox.Letter.ToLower(), "-", sb.ToString().IndexOf(letterBox.Letter.ToLower()), 1);
+                    }
+                    else
+                    {
+                        letterBox.State = LetterBoxState.Incorrect;
+                        _form.virtualKeyboard.KeyDictionary[letterBox.Letter.ToLower()].State = LetterBoxState.Incorrect;
+
+                    }
                 }
-                else
-                {
-                    letterBox.State = LetterBoxState.Incorrect;
-                }
+                
                 i++;
             }
 

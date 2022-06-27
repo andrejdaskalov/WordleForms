@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="Key.cs" />
+    <Compile Include="VirtualKeyboard.cs" />
     <Compile Include="WordleForm.cs">
       <SubType>Form</SubType>
     </Compile>

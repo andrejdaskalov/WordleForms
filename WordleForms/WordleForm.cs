@@ -24,6 +24,7 @@ namespace WordleForms
         private readonly Rectangle _rectangleLogoOffset;
         private static readonly StringFormat StringFormat = new StringFormat();
         private Board board;
+        public VirtualKeyboard virtualKeyboard;
 
         static WordleForm()
         {
@@ -35,13 +36,14 @@ namespace WordleForms
         {
             InitializeComponent();
             Width = 470;
-            Height = 570;
+            Height = 700;
             statusStrip1.BackColor = Color.FromArgb(255, 1, 5, 15);
             toolStrip1.BackColor = Color.FromArgb(255, 1, 8, 18);
             toolStrip1.ForeColor = Color.FromArgb(255, 1, 8, 18);
             _rectangleLogo = new Rectangle(0, 0, Width, 100);
             _rectangleLogoOffset = new Rectangle(2, 2, Width, 100);
             board = new Board(this);
+            virtualKeyboard = new VirtualKeyboard();
             DoubleBuffered = true;
         }
 
@@ -58,6 +60,7 @@ namespace WordleForms
                     board.LetterGrid[i][j].Draw(g);
                 }
             }
+            virtualKeyboard.Draw(g);
         }
 
         public void GameWon()
@@ -98,6 +101,25 @@ namespace WordleForms
 
         }
 
+        private void DeleteLetter()
+        {
+            if (board.CurrentLetter.Previous != null)
+            {
+                if (board.CurrentLetter.Next == null && !board.CurrentLetter.Value.Letter.Equals("_"))
+                {
+                    board.CurrentLetter.Value.Letter = "_";
+                    board.CurrentLetter.Value.IsSelected = true;
+                }
+                else
+                {
+                    board.CurrentLetter.Value.IsSelected = false;
+                    board.CurrentLetter = board.CurrentLetter.Previous;
+                    board.CurrentLetter.Value.Letter = "_";
+                    board.CurrentLetter.Value.IsSelected = true;
+                }
+            }
+        }
+
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             gameMessageLabel.Text = "";
@@ -105,22 +127,7 @@ namespace WordleForms
             //backspace
             if (e.KeyCode == Keys.Back)
             {
-                
-                if (board.CurrentLetter.Previous != null)
-                {
-                    if (board.CurrentLetter.Next == null && !board.CurrentLetter.Value.Letter.Equals("_"))
-                    {
-                        board.CurrentLetter.Value.Letter = "_";
-                        board.CurrentLetter.Value.IsSelected = true;
-                    }
-                    else
-                    {
-                        board.CurrentLetter.Value.IsSelected = false;
-                        board.CurrentLetter = board.CurrentLetter.Previous;
-                        board.CurrentLetter.Value.Letter = "_";
-                        board.CurrentLetter.Value.IsSelected = true;
-                    }
-                }
+                DeleteLetter();
                 Invalidate();
                 return;
             }
@@ -128,49 +135,58 @@ namespace WordleForms
             if (board.CurrentLetter.Value.Letter.Equals("_") && KeyIsValid(e.KeyCode))
             {
                 string key = "" + (char)e.KeyValue;
-                board.CurrentLetter.Value.Letter = key;
-                board.CurrentLetter.Value.IsSelected = false;
-                if (board.CurrentLetter.Next != null)
-                {
-                    board.CurrentLetter = board.CurrentLetter.Next;
-                    board.CurrentLetter.Value.IsSelected = true;
-                }
+                EnterLetter(key);
             }
             //enter key action
             if (e.KeyCode == Keys.Enter && board.CurrentLetter.Next == null)
             {
-
                 var word = board.CollectWord();
-                if (word != null && word.Length == 5)
-                {
-                    if (! board.WordList.Contains(word))
-                    {
-                        // DialogResult message = MessageBox.Show("Not a valid word", "Invalid word", MessageBoxButtons.OK,
-                        //     MessageBoxIcon.Exclamation);
-                        gameMessageLabel.Text = "Not a valid word!";
-                        return;
-                    }
-
-                    board.ProcessWord();
-
-                    board.NumGuesses++;
-                    if (board.NumGuesses >= 6)
-                    {
-                        GameOver();
-                        return;
-                    }
-                }
-                
-                if (board.CurrentWord.Next != null)
-                {
-                    board.CurrentLetter.Value.IsSelected = false;
-                    board.CurrentWord = board.CurrentWord.Next;
-                    board.CurrentLetter = board.CurrentWord.Value.First;
-                    board.CurrentLetter.Value.IsSelected = true;
-                }
+                if (EnterWord(word)) return;
             }
 
             Invalidate();
+        }
+
+        private bool EnterWord(string word)
+        {
+            if (word != null && word.Length == 5)
+            {
+                if (!board.WordList.Contains(word))
+                {
+                    gameMessageLabel.Text = "Not a valid word!";
+                    return true;
+                }
+
+                board.ProcessWord();
+
+                board.NumGuesses++;
+                if (board.NumGuesses >= 6)
+                {
+                    GameOver();
+                    return true;
+                }
+            }
+
+            if (board.CurrentWord.Next != null)
+            {
+                board.CurrentLetter.Value.IsSelected = false;
+                board.CurrentWord = board.CurrentWord.Next;
+                board.CurrentLetter = board.CurrentWord.Value.First;
+                board.CurrentLetter.Value.IsSelected = true;
+            }
+
+            return false;
+        }
+
+        private void EnterLetter(string key)
+        {
+            board.CurrentLetter.Value.Letter = key;
+            board.CurrentLetter.Value.IsSelected = false;
+            if (board.CurrentLetter.Next != null)
+            {
+                board.CurrentLetter = board.CurrentLetter.Next;
+                board.CurrentLetter.Value.IsSelected = true;
+            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)

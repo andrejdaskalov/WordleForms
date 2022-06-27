@@ -5,7 +5,7 @@ namespace WordleForms
 {
 
     // An enumerator denoting the state of the letter box. 
-    enum LetterBoxState
+    public enum LetterBoxState
     {
         Positioned, //  correctly guessed and at the correct spot, green
         Guessed,    //  correctly guessed but NOT in the correct spot, yellow
@@ -14,7 +14,7 @@ namespace WordleForms
 
     }
     // Perhaps a bad name but it's a letter in a box => LetterBox
-    internal class LetterBox
+    public class LetterBox
     {
 
         //UI stuff
