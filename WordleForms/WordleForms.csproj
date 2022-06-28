@@ -48,6 +48,12 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="Key.cs" />
+    <Compile Include="Tutorial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tutorial.Designer.cs">
+      <DependentUpon>Tutorial.cs</DependentUpon>
+    </Compile>
     <Compile Include="VirtualKeyboard.cs" />
     <Compile Include="WordleForm.cs">
       <SubType>Form</SubType>
@@ -58,6 +64,9 @@
     <Compile Include="LetterBox.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Tutorial.resx">
+      <DependentUpon>Tutorial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WordleForm.resx">
       <DependentUpon>WordleForm.cs</DependentUpon>
     </EmbeddedResource>

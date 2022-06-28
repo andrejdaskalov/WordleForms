@@ -50,7 +50,7 @@ namespace WordleForms
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.Clear(Color.FromArgb(255,1,8,18));
+            g.Clear(Color.FromArgb(255, 1, 8, 18));
             g.DrawString("Wordle Forms", new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold), new SolidBrush(Color.DarkCyan), _rectangleLogoOffset, StringFormat);
             g.DrawString("Wordle Forms", new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold), new SolidBrush(Color.Azure), _rectangleLogo, StringFormat);
             for (int i = 0; i < 6; i++)
@@ -197,7 +197,7 @@ namespace WordleForms
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-
+            new Tutorial().ShowDialog();
         }
 
         private void WordleForm_MouseDown(object sender, MouseEventArgs e)
@@ -228,6 +228,16 @@ namespace WordleForms
                 }
             }
             Invalidate();
+        }
+
+        private void WordleForm_Load(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.isFirstTime)
+            {
+                Properties.Settings.Default.isFirstTime = false;
+                Properties.Settings.Default.Save();
+                new Tutorial().ShowDialog();
+            }
         }
     }
 }

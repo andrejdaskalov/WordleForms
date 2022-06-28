@@ -101,6 +101,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Name = "WordleForm";
             this.Text = "WordleForm";
+            this.Load += new System.EventHandler(this.WordleForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.WordleForm_MouseDown);
