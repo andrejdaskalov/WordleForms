@@ -19,7 +19,7 @@ namespace WordleForms
             this.parent = parent;
             lblWinTimes.Text = UserScore.Wins.ToString();
             lblTotal.Text = UserScore.GamesPlayed.ToString();
-            labelOver.Text = IsWin ? "You Win!" : $"You Lose, the correct word was {parent.board.CorrectWord}";
+            labelOver.Text = IsWin ? "You Win!" : $"You Lose, the correct word was {parent.Board.CorrectWord}";
             Text = IsWin ? "You Win!" : "You Lose";
             var total = UserScore.GamesPlayed;
             

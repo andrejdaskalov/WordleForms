@@ -10,7 +10,7 @@ using WordleForms.Properties;
 
 namespace WordleForms
 {
-    internal class Board
+    public class Board
     {
         private static int Padding = 10;
         private static int XOffset = 80;

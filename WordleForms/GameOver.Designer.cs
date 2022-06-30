@@ -53,10 +53,10 @@
             // labelOver
             // 
             this.labelOver.AutoSize = true;
-            this.labelOver.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelOver.Location = new System.Drawing.Point(230, 34);
+            this.labelOver.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelOver.Location = new System.Drawing.Point(38, 28);
             this.labelOver.Name = "labelOver";
-            this.labelOver.Size = new System.Drawing.Size(95, 36);
+            this.labelOver.Size = new System.Drawing.Size(86, 31);
             this.labelOver.TabIndex = 0;
             this.labelOver.Text = "label1";
             this.labelOver.Click += new System.EventHandler(this.label1_Click);
@@ -213,7 +213,7 @@
             // 
             // btnPlayAgain
             // 
-            this.btnPlayAgain.Location = new System.Drawing.Point(73, 455);
+            this.btnPlayAgain.Location = new System.Drawing.Point(84, 455);
             this.btnPlayAgain.Name = "btnPlayAgain";
             this.btnPlayAgain.Size = new System.Drawing.Size(132, 35);
             this.btnPlayAgain.TabIndex = 17;

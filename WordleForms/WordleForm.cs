@@ -23,7 +23,7 @@ namespace WordleForms
         private readonly Rectangle _rectangleLogo;
         private readonly Rectangle _rectangleLogoOffset;
         private static readonly StringFormat StringFormat = new StringFormat();
-        public Board board;
+        public Board Board;
         public VirtualKeyboard virtualKeyboard;
 
         static WordleForm()
@@ -42,7 +42,7 @@ namespace WordleForms
             toolStrip1.ForeColor = Color.FromArgb(255, 1, 8, 18);
             _rectangleLogo = new Rectangle(0, 0, Width, 100);
             _rectangleLogoOffset = new Rectangle(2, 2, Width, 100);
-            board = new Board(this);
+            Board = new Board(this);
             virtualKeyboard = new VirtualKeyboard();
             DoubleBuffered = true;
         }
@@ -57,7 +57,7 @@ namespace WordleForms
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    board.LetterGrid[i][j].Draw(g);
+                    Board.LetterGrid[i][j].Draw(g);
                 }
             }
             virtualKeyboard.Draw(g);
@@ -66,17 +66,17 @@ namespace WordleForms
         public void GameWon()
         {
             Invalidate();
-            new GameOver(this, board.UserScore, true).ShowDialog();
+            new GameOver(this, Board.UserScore, true).ShowDialog();
         }
         public void GameOver()
         {
             Invalidate();
-            new GameOver(this, board.UserScore, false).ShowDialog();
+            new GameOver(this, Board.UserScore, false).ShowDialog();
         }
 
         public void RestartGame()
         {
-            board = new Board(this);
+            Board = new Board(this);
             virtualKeyboard = new VirtualKeyboard();
             Invalidate();
         }
@@ -90,19 +90,19 @@ namespace WordleForms
 
         private void DeleteLetter()
         {
-            if (board.CurrentLetter.Previous != null)
+            if (Board.CurrentLetter.Previous != null)
             {
-                if (board.CurrentLetter.Next == null && !board.CurrentLetter.Value.Letter.Equals("_"))
+                if (Board.CurrentLetter.Next == null && !Board.CurrentLetter.Value.Letter.Equals("_"))
                 {
-                    board.CurrentLetter.Value.Letter = "_";
-                    board.CurrentLetter.Value.IsSelected = true;
+                    Board.CurrentLetter.Value.Letter = "_";
+                    Board.CurrentLetter.Value.IsSelected = true;
                 }
                 else
                 {
-                    board.CurrentLetter.Value.IsSelected = false;
-                    board.CurrentLetter = board.CurrentLetter.Previous;
-                    board.CurrentLetter.Value.Letter = "_";
-                    board.CurrentLetter.Value.IsSelected = true;
+                    Board.CurrentLetter.Value.IsSelected = false;
+                    Board.CurrentLetter = Board.CurrentLetter.Previous;
+                    Board.CurrentLetter.Value.Letter = "_";
+                    Board.CurrentLetter.Value.IsSelected = true;
                 }
             }
         }
@@ -119,15 +119,15 @@ namespace WordleForms
                 return;
             }
             //any other key
-            if (board.CurrentLetter.Value.Letter.Equals("_") && KeyIsValid(e.KeyCode))
+            if (Board.CurrentLetter.Value.Letter.Equals("_") && KeyIsValid(e.KeyCode))
             {
                 string key = "" + (char)e.KeyValue;
                 EnterLetter(key);
             }
             //enter key action
-            if (e.KeyCode == Keys.Enter && board.CurrentLetter.Next == null)
+            if (e.KeyCode == Keys.Enter && Board.CurrentLetter.Next == null)
             {
-                var word = board.CollectWord();
+                var word = Board.CollectWord();
                 if (EnterWord(word)) return;
             }
 
@@ -138,29 +138,29 @@ namespace WordleForms
         {
             if (word != null && word.Length == 5)
             {
-                if (!board.WordList.Contains(word))
+                if (!Board.WordList.Contains(word))
                 {
                     gameMessageLabel.Text = "Not a valid word!";
                     return true;
                 }
 
-                board.ProcessWord();
+                Board.ProcessWord();
 
-                board.NumGuesses++;
-                if (board.NumGuesses >= 6)
+                Board.NumGuesses++;
+                if (Board.NumGuesses >= 6)
                 {
-                    board.SaveUserScore();
+                    Board.SaveUserScore();
                     GameOver();
                     return true;
                 }
             }
 
-            if (board.CurrentWord.Next != null)
+            if (Board.CurrentWord.Next != null)
             {
-                board.CurrentLetter.Value.IsSelected = false;
-                board.CurrentWord = board.CurrentWord.Next;
-                board.CurrentLetter = board.CurrentWord.Value.First;
-                board.CurrentLetter.Value.IsSelected = true;
+                Board.CurrentLetter.Value.IsSelected = false;
+                Board.CurrentWord = Board.CurrentWord.Next;
+                Board.CurrentLetter = Board.CurrentWord.Value.First;
+                Board.CurrentLetter.Value.IsSelected = true;
             }
 
             return false;
@@ -168,12 +168,12 @@ namespace WordleForms
 
         private void EnterLetter(string key)
         {
-            board.CurrentLetter.Value.Letter = key;
-            board.CurrentLetter.Value.IsSelected = false;
-            if (board.CurrentLetter.Next != null)
+            Board.CurrentLetter.Value.Letter = key;
+            Board.CurrentLetter.Value.IsSelected = false;
+            if (Board.CurrentLetter.Next != null)
             {
-                board.CurrentLetter = board.CurrentLetter.Next;
-                board.CurrentLetter.Value.IsSelected = true;
+                Board.CurrentLetter = Board.CurrentLetter.Next;
+                Board.CurrentLetter.Value.IsSelected = true;
             }
         }
 
@@ -199,7 +199,7 @@ namespace WordleForms
 
             if (virtualKeyboard.EnterKey.Bounds.Contains(p))
             {
-                var word = board.CollectWord();
+                var word = Board.CollectWord();
                 EnterWord(word);
                 Invalidate();
                 return;
