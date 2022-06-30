@@ -47,6 +47,7 @@
             this.progressBar6 = new System.Windows.Forms.ProgressBar();
             this.btnPlayAgain = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelOver
@@ -230,11 +231,23 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(187, 165);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(179, 25);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "Distribution of wins:";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
             // GameOver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(591, 525);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnPlayAgain);
             this.Controls.Add(this.progressBar6);
@@ -282,5 +295,6 @@
         private System.Windows.Forms.ProgressBar progressBar6;
         private System.Windows.Forms.Button btnPlayAgain;
         private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Label label9;
     }
 }
