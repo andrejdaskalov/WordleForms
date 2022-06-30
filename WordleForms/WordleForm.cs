@@ -23,7 +23,7 @@ namespace WordleForms
         private readonly Rectangle _rectangleLogo;
         private readonly Rectangle _rectangleLogoOffset;
         private static readonly StringFormat StringFormat = new StringFormat();
-        private Board board;
+        public Board board;
         public VirtualKeyboard virtualKeyboard;
 
         static WordleForm()
@@ -66,29 +66,15 @@ namespace WordleForms
         public void GameWon()
         {
             Invalidate();
-            DialogResult message = MessageBox.Show("You won. Nice work! Would you like to try again?", "You win!", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Exclamation);
-            if (message == DialogResult.Yes)
-            {
-                RestartGame();
-            }
-            else
-                Close();
+            new GameOver(this, board.UserScore, true).ShowDialog();
         }
         public void GameOver()
         {
             Invalidate();
-            DialogResult message = MessageBox.Show($"You ran out of tries before guessing correctly. The correct word was {board.CorrectWord}. Would you like to try again?", "Game Over", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Error);
-            if (message == DialogResult.Yes)
-            {
-                RestartGame();
-            }
-            else
-                Close();
+            new GameOver(this, board.UserScore, false).ShowDialog();
         }
 
-        private void RestartGame()
+        public void RestartGame()
         {
             board = new Board(this);
             virtualKeyboard = new VirtualKeyboard();
@@ -163,6 +149,7 @@ namespace WordleForms
                 board.NumGuesses++;
                 if (board.NumGuesses >= 6)
                 {
+                    board.SaveUserScore();
                     GameOver();
                     return true;
                 }

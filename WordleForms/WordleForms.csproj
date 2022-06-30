@@ -47,6 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="GameOver.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameOver.Designer.cs">
+      <DependentUpon>GameOver.cs</DependentUpon>
+    </Compile>
     <Compile Include="Key.cs" />
     <Compile Include="Tutorial.cs">
       <SubType>Form</SubType>
@@ -54,6 +60,7 @@
     <Compile Include="Tutorial.Designer.cs">
       <DependentUpon>Tutorial.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserScore.cs" />
     <Compile Include="VirtualKeyboard.cs" />
     <Compile Include="WordleForm.cs">
       <SubType>Form</SubType>
@@ -64,6 +71,9 @@
     <Compile Include="LetterBox.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GameOver.resx">
+      <DependentUpon>GameOver.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tutorial.resx">
       <DependentUpon>Tutorial.cs</DependentUpon>
     </EmbeddedResource>

@@ -15,6 +15,7 @@ namespace WordleForms
         private static int Padding = 10;
         private static int XOffset = 80;
         private static int YOffset = 100;
+        private static string pathToScore = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\userscore.bin";
 
         private readonly WordleForm _form;
 
@@ -26,6 +27,7 @@ namespace WordleForms
         public List<string> WordList;
         public List<string> AnswerList;
         public int NumGuesses;
+        public UserScore UserScore;
 
         public Board(WordleForm form)
         {
@@ -43,8 +45,44 @@ namespace WordleForms
 
             GetWordList();
             NumGuesses = 0;
+            UserScore = GetUserScore();
         }
 
+        private UserScore GetUserScore()
+        {
+            UserScore u;
+            if (File.Exists(pathToScore))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                Stream stream;
+                using (stream = File.OpenRead(pathToScore))
+                {
+                   u = (UserScore)formatter.Deserialize(stream);
+                }
+            }
+            else
+            {
+                u = new UserScore();
+            }
+
+            return u;
+        }
+
+        public void SaveUserScore()
+        {
+            UserScore.GamesPlayed += 1;
+            BinaryFormatter formatter = new BinaryFormatter();
+            Stream stream;
+            using (stream = File.Create(pathToScore))
+            {
+                formatter.Serialize(stream, UserScore);
+            }
+        }
+
+        /// <summary>
+        /// Constructs the grid of Letterboxes. 
+        /// </summary>
+        /// <returns>A jagged 2d array od LetterBox</returns>
         private LetterBox[][] ConstructGrid()
         {
             var letterGrid = new LetterBox[6][];
@@ -83,7 +121,7 @@ namespace WordleForms
         /// This method deserializes the word list stored in the wordlist.bin, created by the WordListProcessor script. The .bin contains a List of strings .
         ///
         /// </summary>
-        private bool GetWordList()
+        private void GetWordList()
         {
             BinaryFormatter formatter = new BinaryFormatter();
             Stream stream;
@@ -91,8 +129,6 @@ namespace WordleForms
             {
                 WordList = (List<string>)formatter.Deserialize(stream);
             }
-
-            return WordList != null;
         }
 
         /// <summary>
@@ -110,18 +146,27 @@ namespace WordleForms
             return AnswerList != null;
         }
 
+        /// <summary>
+        /// Gets a random word from the list answer list
+        /// </summary>
+        /// <returns>the chosen word</returns>
         private string PickWord()
         {
             Random random = new Random();
             var index = random.Next(0, AnswerList.Count);
             return AnswerList.ElementAt(index);
         }
-
+        /// <summary>
+        /// Takes a previously validated word, and marks each letter based on the rules of the game
+        /// </summary>
         public void ProcessWord()
         {
             int i = 0;
             int correctLetters = 0;
             StringBuilder sb = new StringBuilder(CorrectWord);
+
+            //First iterate through the word to check for correctly positioned letters, and mark accordingly
+            //Mark off in sb if it's correctly positioned, so it doesn't get marked twice in the next for loop
             foreach (var letterBox in CurrentWord.Value)
             {
                 if (sb.ToString().IndexOf(letterBox.Letter.ToLower()) == i)
@@ -131,6 +176,9 @@ namespace WordleForms
                     correctLetters++;
                     if (correctLetters == 5)
                     {
+                        UserScore.Wins += 1;
+                        UserScore.NumberOfGuesses[NumGuesses] += 1;
+                        SaveUserScore();
                         _form.GameWon();
                     }
                     sb = sb.Replace(letterBox.Letter.ToLower(), "-", i, 1);
@@ -139,6 +187,8 @@ namespace WordleForms
                 i++;
             }
 
+            //iterate through word a second time, now marking each letter as Guessed or Incorrect
+            //while marking off the Guessed letters so they do not get counted twice
             i = 0;
             foreach (var letterBox in CurrentWord.Value)
             {
@@ -163,6 +213,10 @@ namespace WordleForms
 
         }
 
+        /// <summary>
+        /// Builds a string from the LetterBoxes in the current word
+        /// </summary>
+        /// <returns>The collected word as string</returns>
         public string CollectWord()
         {
             StringBuilder sb = new StringBuilder();

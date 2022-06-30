@@ -34,29 +34,5 @@ namespace WordleForms.Properties {
                 this["isFirstTime"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int score {
-            get {
-                return ((int)(this["score"]));
-            }
-            set {
-                this["score"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int highScore {
-            get {
-                return ((int)(this["highScore"]));
-            }
-            set {
-                this["highScore"] = value;
-            }
-        }
     }
 }
